@@ -1,0 +1,146 @@
+% latexmk -xelatex -shell-escape main
+\documentclass{ctexart}
+\usepackage{minted}
+\setminted{
+    autogobble  =   true,
+    frame       =   leftline,
+    fontsize    =   \small
+}
+% \setmintedinline{ fontsize = \normalsize }
+
+\usepackage[inline]{enumitem}
+\setlist[enumerate, 1]{label = \arabic*. }
+\setlist[enumerate, 2]{label = (\arabic*)}
+\usepackage{geometry}
+\geometry{margin = 2.5cm}
+
+\usepackage[os=win]{menukeys}
+\usepackage{hologo}
+\newcommand{\mt}[1]{\mintinline{text}{#1}}
+\newcommand{\mb}[1]{\mintinline{bash}{#1}}
+
+\title{命令行测试}
+\author{Syvshc}
+
+\begin{document}
+    \maketitle
+    \textbf{在下列问题中, 均将主文档名称命名为 \mt{main.tex}, 参考文献文档命名为 \mt{xampl.bib}\footnote{这是 \TeX\,Live 自带的一个参考文献库, 详见 \mb{texdoc mwe}}}
+    \section{问题}
+    \begin{enumerate}
+        \item 使用 \mt{article} 文档类完成一篇文档, 命令行应该 (依次) 执行什么命令来进行编译?
+        \begin{enumerate}
+            \item 无目录, 无参考文献, 无交叉引用;
+            \item 有目录, 无参考文献, 有交叉引用；
+            \item 有目录, 有参考文献, 有交叉引用.
+        \end{enumerate}
+        \item 编译时如果报了如下错误, 应该如何退出报错界面, 或者获取可能的帮助
+        \begin{minted}[]{text}
+            ! Undefined control sequence.
+            l.4     $ \Sum
+                        _{0}^{1} $
+            ?
+        \end{minted}
+        \item 使用 \mb{pdflatex main} 编译如下代码时, 会报出什么错误, 应如何解决
+        \begin{minted}[]{latex}
+            \documentclass{article}
+            \usepackage{fontspec}
+            \begin{document}
+                test
+            \end{document}
+        \end{minted}
+        \item 如何查看 \mb{xelatex} 的可用编译选项\footnote{在运行 \mt{xelatex -interaction=nonstopmode main} 时, \mt{-interaction=nonstopmode} 为 \mt{xelatex} 的编译选项, 它会在编译的过程中提供一些其他的功能}, 或者说如何查看 \mb{xelatex} 的帮助?
+        \item 使用 \mb{pdflatex main} 编译如下代码时, 会报出什么错误, 应如何解决
+        \begin{VerbatimOut}[gobble=1]{minted.doc.out}
+            \documentclass{article}
+            \usepackage{minted}
+            \begin{document}
+                \begin{minted}{python}
+                    x = [for x in range(10) if x % 2 == 1]
+                    print(x)
+                \end{minted}
+            \end{document}
+        \end{VerbatimOut}
+        \inputminted[]{latex}{minted.doc.out}
+        \item 我想让我的 \mt{pdf} 文档与 \mt{tex} 源文件有正反向搜索的功能, 应该在编译时添加什么选项?
+        \item 我在编译 \mt{main.tex} 的时候, 想让输出文件名为 \mt{zwxm.pdf} 应该在编译时添加什么选项?
+        \item 如果编译时报了如下的错误, 应该如何解决, 或者说应该首先排查什么问题
+        \begin{minted}[]{text}
+            ! I can't write on file `main.pdf'.
+            (Press Enter to retry, or Control-Z to exit; default file extension is `.pdf')
+            Please type another file name for output:
+        \end{minted}
+        \item 使用 \mt{pdflatex + bibtex + pdflatex*2} 编译如下文档, 会报什么错\footnote{有时报错并不会以 \mt{error} 的形式出现, 如交叉引用, 参考文献处的错误可能表现为 \mt{warning}, 此时该 \mt{warning} 会影响到编译结果, 需要处理}, 应该如何解决
+        \begin{minted}[]{latex}
+            \documentclass{article}
+            \usepackage{biblatex}
+            \addbibresource{xampl.bib}
+            \begin{document}
+                this is a cite\cite{article-full}
+                \printbibliography
+            \end{document}
+        \end{minted}
+        \item 使用 \mt{latexmk} 可以自动地进行参考文献, 交叉引用等处理, 应该如何查看 \mt{latexmk} 相关的编译选项?
+        \item 如果想使用 \mt{latexmk} 运行 \mt{pdflatex} 与 \mt{xelatex}, 应该分别添加什么编译选项?
+        \item 如果想使用 \mt{latexmk} 的 ``自动检测更改并自动编译'' 的功能, 应该添加什么编译选项?
+        \item 如果想使用 \mt{latexmk} 清除辅助文件, 应该运行什么命令? 同时如果想清除除源文件以外的所有输出文件, 应该运行什么命令?
+    \end{enumerate}
+
+    \section{非标准答案}
+    \begin{enumerate}
+        \item \begin{enumerate*}
+            \item \mt{pdflatex main} 
+            \item \mt{pdflatex pdflatex}
+            \item \mt{pdflatex bibtex pdflatex*2}
+        \end{enumerate*}
+        \item 输入 \keys{? + \enter} 可以获得可行的操作, 特别地, 输入 \keys{x + \enter} 可以退出, 输入 \keys{h + \enter} 可以或许可能的帮助.
+        \item 会报以下的错误 
+        \begin{minted}[]{text}
+            ! Fatal Package fontspec Error: The fontspec package requires either XeTeX or
+            (fontspec)                      LuaTeX.
+            (fontspec)
+            (fontspec)                      You must change your typesetting engine to,
+            (fontspec)                      e.g., "xelatex" or "lualatex"instead of
+            (fontspec)                      "latex" or "pdflatex".
+
+            Type <return> to continue.
+            ...
+
+            l.45 \msg_fatal:nn {fontspec} {cannot-use-pdftex}
+
+            ?
+        \end{minted}
+        应该改用 \mt{xelatex} 或 \mt{lulatex} 进行编译.
+        \item 命令行运行 \mt{xelatex --help}
+        \item 会报以下错误
+        \begin{minted}[]{latex}
+            ! Package minted Error: You must invoke LaTeX with the -shell-escape flag.
+
+            See the minted package documentation for explanation.
+            Type  H <return>  for immediate help.
+            ...
+
+            l.3 \begin
+                    {document}
+            ?
+        \end{minted}
+        应该在编译的时候添加 \mt{-shell-escape}, 即使用 \mt{pdflatex -shell-escape main} 编译\footnote{该宏包需要调用外部程序 \mt{pygments}, 具体可以查阅 \mt{texdoc minted}}.
+        \item 添加 \mt{-synctex=1} 选项.
+        \item 添加 \mt{-jobname=zwxm} 选项.
+        \item 错误为 \mt{main.pdf} 不能被写入, 应该先检查 \mt{main.pdf} 有没有被如 Adobe Acrobat DC, Foxit Reader 等 PDF 阅读器打开. 
+        \item 会返回如下警告
+        \begin{minted}[]{text}
+            LaTeX Warning: There were undefined references.
+
+            Package biblatex Warning: Please (re)run Biber on the file:
+            (biblatex)                main
+            (biblatex)                and rerun LaTeX afterwards.
+        \end{minted}
+        这是除了 \hologo{BibTeX} 以外的另一种参考文献处理方式: \textsc{Bib}\hologo{LaTeX}, 需要将 \mt{bibtex} 替换为 \mt{biber} 进行编译
+        \item 可以通过命令行运行 \mt{latexmk -help} 进行查看, 或者命令行运行 \mt{texdoc latexmk} 查看其文档.
+        \item \mt{-pvc}
+        \item \begin{enumerate*}
+            \item \mt{-c}
+            \item \mt{-C}
+        \end{enumerate*}
+    \end{enumerate}
+\end{document}
